@@ -23,3 +23,18 @@ func Register(c *gin.Context) {
         c.JSON(http.StatusCreated, user)
     }
 }
+
+func GrantAccess(c *gin.Context) {
+    var form auth.GrantAccessForm
+    err := c.BindJSON(&form)
+    if err != nil {
+        c.AbortWithStatusJSON(http.StatusUnprocessableEntity, err.Error())
+        return
+    }
+    access, err2 := auth.GrantAccess(&form)
+    if err2 != nil {
+        c.AbortWithStatusJSON(http.StatusUnauthorized, err2.Error())
+    } else {
+        c.JSON(http.StatusCreated, access)
+    }
+}

@@ -17,7 +17,7 @@ func (u *User) SetPassword(password string) {
 
 func (u *User) VerifyPassword(password string) bool {
     err := bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(password))
-    return err != nil
+    return err == nil
 }
 
 func (u *User) GetID() uint {

@@ -23,7 +23,7 @@ func (p *payload) expired() bool {
 }
 
 func createPayload(issuer Issuer) payload {
-    e, _ := strconv.ParseUint(os.Getenv("JWT_EXP"), 2, 32)
+    e, _ := strconv.ParseUint(os.Getenv("JWT_EXP"), 10, 32)
     at := time.Now().Unix()
     return payload{
         Email: issuer.GetEmail(),
