@@ -1,0 +1,4 @@
+.idea
+.env
+__debug_bin
+/kanban.db
