@@ -1,13 +1,16 @@
 package models
 
 import (
+    "time"
+
     "golang.org/x/crypto/bcrypt"
 )
 
 type User struct {
     Model
-    Email    string `json:"email" gorm:"uniqueIndex;not null"`
-    Password string `json:"-" gorm:"not null"`
+    Email      string    `json:"email" gorm:"uniqueIndex;not null"`
+    Password   string    `json:"-" gorm:"not null"`
+    VerifiedAt time.Time `json:"updated_at"`
 }
 
 func (u *User) SetPassword(password string) {

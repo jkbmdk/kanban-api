@@ -5,23 +5,41 @@ import (
     "net/http"
 
     "github.com/gin-gonic/gin"
+    "github.com/jkbmdk/kanban-api/internal/models"
     "github.com/jkbmdk/kanban-api/pkg/auth"
+    "github.com/jkbmdk/kanban-api/pkg/mailer"
 )
 
 func Register(c *gin.Context) {
     var form auth.RegisterForm
+    var user *models.User
+
     err := c.BindJSON(&form)
     if err != nil {
         c.AbortWithStatusJSON(http.StatusUnprocessableEntity, err.Error())
         return
     }
-    user, err2 := auth.Register(&form)
-    if err2 != nil {
-        fmt.Println(err2.Error())
+    user, err = auth.Register(&form)
+    if err != nil {
+        fmt.Println(err.Error())
         c.AbortWithStatus(http.StatusInternalServerError)
-    } else {
-        c.JSON(http.StatusCreated, user)
+        return
     }
+
+    mail := mailer.Mail{
+        Subject:  "Please verify your email",
+        Template: "verify",
+        From:     "kanban@example.com",
+    }
+    err = mail.Send(user.Email)
+    if err != nil {
+        // shall remove user
+        fmt.Println(err.Error())
+        c.AbortWithStatus(http.StatusInternalServerError)
+        return
+    }
+
+    c.JSON(http.StatusCreated, user)
 }
 
 func GrantAccess(c *gin.Context) {
