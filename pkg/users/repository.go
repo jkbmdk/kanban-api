@@ -11,10 +11,16 @@ func GetAllUsers() []models.User {
     return users
 }
 
-func GetUserByEmail(email string) (models.User, error) {
+func GetUserById(id uint) (*models.User, error) {
+    var user models.User
+    err := database.DB.Where("id = ?", id).First(&user).Error
+    return &user, err
+}
+
+func GetUserByEmail(email string) (*models.User, error) {
     var user models.User
     err := database.DB.Where("email = ?", email).First(&user).Error
-    return user, err
+    return &user, err
 }
 
 func StoreUser(user *models.User) error {

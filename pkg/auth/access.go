@@ -22,6 +22,6 @@ func GrantAccess(form *GrantAccessForm) (*Access, error) {
     if err != nil || !user.VerifyPassword(form.Password)  {
         return &access, errors.New("wrong credentials")
     }
-    access.Token = jwt.Generate(&user)
+    access.Token = jwt.Generate(user)
     return &access, nil
 }

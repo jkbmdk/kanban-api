@@ -18,29 +18,29 @@ func Generate(issuer Issuer) string {
 	return strings.Join([]string{headerEncoded, payloadEncoded, signature(headerEncoded, payloadEncoded)}, ".")
 }
 
-func Verify(token string) error {
+func Parse(token string) (uint, error) {
 	parts := strings.Split(token, ".")
 	if len(parts) != 3 {
-		return errors.New("JWT VERIFY: wrong token format")
+		return 0, errors.New("JWT VERIFY: wrong token format")
 	}
 
 	if signature(parts[0], parts[1]) != parts[2] {
-		return errors.New("JWT VERIFY: sum mismatch")
+		return 0, errors.New("JWT VERIFY: sum mismatch")
 	}
 
 	payloadJSON, err := base64Decode(parts[1])
 	if err != nil {
-		return errors.New("JWT VERIFY: unable to read payloadJSON")
+		return 0, errors.New("JWT VERIFY: unable to read payloadJSON")
 	}
 
 	var payload payload
 	if json.Unmarshal(payloadJSON, &payload) != nil {
-		return errors.New("JWT VERIFY: payload properties mismatch")
+		return 0, errors.New("JWT VERIFY: payload properties mismatch")
 	}
 
 	if payload.expired() {
-		return errors.New("JWT VERIFY: token expired")
+		return 0, errors.New("JWT VERIFY: token expired")
 	}
 
-	return nil
+	return payload.Issuer, nil
 }

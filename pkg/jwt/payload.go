@@ -6,11 +6,6 @@ import (
     "time"
 )
 
-type Issuer interface {
-    GetID() uint
-    GetEmail() string
-}
-
 type payload struct {
     Email    string `json:"email"`
     Issuer   uint   `json:"iss"`
@@ -31,17 +26,4 @@ func createPayload(issuer Issuer) payload {
         IssuedAt: at,
         ExpireIn: uint(e),
     }
-}
-
-type issuer struct {
-    ID    uint
-    Email string
-}
-
-func (i *issuer) GetID() uint {
-    return i.ID
-}
-
-func (i *issuer) GetEmail() string {
-    return i.Email
 }
